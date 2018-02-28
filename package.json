@@ -1,0 +1,7 @@
+{
+  "name": "hal-client",
+  "version": "0.1.0",
+  "main": "index.js",
+  "author": "Marcel Hoyer <m.hoyer@pixelplastic.de>",
+  "license": "MIT"
+}
