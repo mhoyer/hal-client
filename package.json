@@ -3,5 +3,25 @@
   "version": "0.1.0",
   "main": "index.js",
   "author": "Marcel Hoyer <m.hoyer@pixelplastic.de>",
-  "license": "MIT"
+  "license": "MIT",
+  "scripts": {
+    "start": "mocha -wr ts-node/register lib/**/*.spec.ts --watch-extensions ts",
+    "test": "mocha -r ts-node/register lib/**/*.spec.ts"
+  },
+  "dependencies": {
+    "url-template": "^2.0.8"
+  },
+  "devDependencies": {
+    "@types/chai": "^4.1.2",
+    "@types/mocha": "^5.0.0",
+    "@types/sinon": "^4.3.1",
+    "@types/sinon-chai": "^2.7.29",
+    "@types/url-template": "^2.0.28",
+    "chai": "^4.1.2",
+    "mocha": "^5.0.5",
+    "sinon": "^4.5.0",
+    "sinon-chai": "^3.0.0",
+    "ts-node": "^5.0.1",
+    "typescript": "^2.8.1"
+  }
 }

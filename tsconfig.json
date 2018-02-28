@@ -1,0 +1,11 @@
+{
+    "include": [
+        "./lib"
+    ],
+    "compilerOptions": {
+        "lib": [ "dom", "es2015" ],
+        "outDir": "./dist",
+        "removeComments": true,
+        "target": "es5",
+    }
+}
