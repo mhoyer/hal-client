@@ -9,9 +9,8 @@ export class HalResource {
     };
 
     static findLink(res: HalResource, relName: string, relIndex = 0): HalLink {
-        if (!(relName in res._links)) {
-            throw new Error(`Relation "${relName}" not found in resource.`);
-        }
+        if (!res._links) return;
+        if (!(relName in res._links)) return;
 
         const links = [].concat(res._links[relName]) as HalLink[];
         return links[relIndex];
