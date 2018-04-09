@@ -5,7 +5,7 @@
   "author": "Marcel Hoyer <m.hoyer@pixelplastic.de>",
   "license": "MIT",
   "scripts": {
-    "start": "mocha -wr ts-node/register lib/**/*.spec.ts --watch-extensions ts",
+    "start": "npm test -- -w --watch-extensions ts",
     "test": "mocha -r ts-node/register lib/**/*.spec.ts"
   },
   "dependencies": {
