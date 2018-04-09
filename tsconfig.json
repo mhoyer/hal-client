@@ -1,6 +1,7 @@
 {
     "include": [
-        "./lib"
+        "./examples",
+        "./lib",
     ],
     "compilerOptions": {
         "lib": [ "dom", "es2015" ],
