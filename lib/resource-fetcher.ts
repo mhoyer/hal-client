@@ -4,25 +4,36 @@ export class ResourceFetcher {
     constructor(private urlFn: LazyPromise<string>, private fetchFn?: FetchFn) {
     }
 
-    request<T = {}>(method: string, requestInit: RequestInit = {}): LazyResource<T> {
-        requestInit.method = method;
+    request<T = {}>(requestInit: RequestInit = {}): LazyResource<T> {
         const urlFn = () => this.urlFn().then(url => ({ url, ri: requestInit}));
         return new LazyResource<T>(urlFn, this.fetchFn);
     }
 
     GET<T = {}>(requestInit: RequestInit = {}): LazyResource<T> {
-        return this.request('GET', requestInit);
+        const ri = Object.assign({}, requestInit, { method: 'GET' });
+        return this.request(ri);
     }
 
-    POST<T = {}>(requestInit: RequestInit = {}): LazyResource<T> {
-        return this.request('POST', requestInit);
+    POST<T = {}>(payload?, requestInit: RequestInit = {}): LazyResource<T> {
+        const ri = Object.assign({}, requestInit, { method: 'POST' });
+        if(payload) {
+            ri.body = JSON.stringify(payload);
+        }
+
+        return this.request(ri);
     }
 
-    PUT<T = {}>(requestInit: RequestInit = {}): LazyResource<T> {
-        return this.request('PUT', requestInit);
+    PUT<T = {}>(payload?, requestInit: RequestInit = {}): LazyResource<T> {
+        const ri = Object.assign({}, requestInit, { method: 'PUT' });
+        if(payload) {
+            ri.body = JSON.stringify(payload);
+        }
+
+        return this.request(ri);
     }
 
     DELETE<T = {}>(requestInit: RequestInit = {}): LazyResource<T> {
-        return this.request('DELETE', requestInit);
+        const ri = Object.assign({}, requestInit, { method: 'DELETE' });
+        return this.request(ri);
     }
 }

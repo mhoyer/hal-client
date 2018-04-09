@@ -33,10 +33,10 @@ import { HalClient } from 'hal-client';
 async function buyArticle() {
     const shopClient = HalClient.startAt('http://api.shop.demo').GET();
 
-    const body = { article: 'red shoes' };
-
-    await shopClient.follow('shop:add-to-cart')
-        .POST({ body: JSON.stringify(body) }).run();
+    const addToCartPayload = { article: 'red shoes' };
+    await shopClient
+        .follow('shop:add-to-cart').POST(addToCartPayload)
+        .run();
 
     const order = await shopClient
         .follow('shop:cart').GET()
@@ -77,9 +77,9 @@ Start the declaration of resource fetching chain based on an existing HAL resouc
 
 #### request<T>(requestInit?: RequestInit)
 
-Declares a lazy HTTP operation to be invoked later.
+Declares a lazy HTTP operation that can be invoked later.
 
-- `requestInit` - (optional) [`RequestInit`](https://developer.mozilla.org/en-US/docs/Web/API/WindowOrWorkerGlobalScope/fetch#Syntax) instance to customize `fetch` call.
+- `requestInit` - (optional) [`RequestInit`](https://developer.mozilla.org/en-US/docs/Web/API/WindowOrWorkerGlobalScope/fetch#Syntax) instance that is used for the later `fetch` call.
 
 *Returns* a new [`LazyResource`](#LazyResource) instance.
 
@@ -88,19 +88,37 @@ later executing the chain with `run()`.
 
 #### GET<T>(requestInit?: RequestInit)
 
-See `request()`
+Calls `request()` with predefined `{ method: 'GET' }`.
 
-#### PUT<T>(requestInit?: RequestInit)
+- `requestInit` - (optional) `RequestInit` instance that is used for the later `fetch` call.
 
-See `request()`
+*Returns* a new [`LazyResource`](#LazyResource) instance.
 
-#### POST<T>(requestInit?: RequestInit)
+#### PUT<T>(payload?, requestInit?: RequestInit)
 
-See `request()`
+Calls `request()` with predefined `{ method: 'PUT' }`.
+
+- `payload` - (optional) object that will be JSON stringified and send as body
+- `requestInit` - (optional) `RequestInit` instance that is used for the later `fetch` call.
+
+*Returns* a new [`LazyResource`](#LazyResource) instance.
+
+#### POST<T>(payload?, requestInit?: RequestInit)
+
+Calls `request()` with predefined `{ method: 'POST' }`.
+
+- `payload` - (optional) object that will be JSON stringified and send as body
+- `requestInit` - (optional) `RequestInit` instance that is used for the later `fetch` call.
+
+*Returns* a new [`LazyResource`](#LazyResource) instance.
 
 #### DELETE<T>(requestInit?: RequestInit)
 
-See `request()`
+Calls `request()` with predefined `{ method: 'DELETE' }`.
+
+- `requestInit` - (optional) `RequestInit` instance that is used for the later `fetch` call.
+
+*Returns* a new [`LazyResource`](#LazyResource) instance.
 
 ### StaticResource
 
