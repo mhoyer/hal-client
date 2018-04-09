@@ -9,11 +9,11 @@ import { HalClient } from '..';
 type RootResource = {};
 type NextResource = {};
 
-export const async () => {
+export default async () => {
     const nextRes = await HalClient
     .startAt('http://...')
     .GET<RootResource>()
     .follow('next')          // define to find 'next' rel in previous HAL resource
     .GET<NextResource>()     // define HTTP method to be used for subsequent fetch
     .run();                  // execute both `fetch` calls and return a Promise
-}
+};

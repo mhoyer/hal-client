@@ -1,10 +1,10 @@
-import * as sinon from "sinon";
-import * as sinonChai from "sinon-chai";
-import * as chai from "chai";
+import * as sinon from 'sinon';
+import * as sinonChai from 'sinon-chai';
+import * as chai from 'chai';
 
-import { HalClient } from "./hal-client";
-import { ResourceFetcher } from "./resource-fetcher";
-import { StaticResource } from "./static-resource";
+import { HalClient } from './hal-client';
+import { ResourceFetcher } from './resource-fetcher';
+import { StaticResource } from './static-resource';
 
 const { expect } = chai;
 chai.use(sinonChai);
@@ -101,7 +101,7 @@ describe('HAL Client', () => {
                     expect(fetchSpy).calledWith('http://example.com/foo');
 
                     expect(res).to.equal(expectedResource);
-                })
+                });
             });
         });
     });

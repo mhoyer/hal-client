@@ -7,7 +7,7 @@ export class HalLink {
     title?: string;
 
     static applyTemplateParams(link: HalLink, templateParams = {}) {
-        if(!link.templated) return link.href;
+        if (!link.templated) return link.href;
 
         return parse(link.href).expand(templateParams);
     }

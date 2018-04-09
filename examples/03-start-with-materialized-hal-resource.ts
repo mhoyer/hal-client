@@ -18,4 +18,4 @@ export default async () => {
         .follow('next')
         .GET<NextResource>()
         .run();
-}
+};

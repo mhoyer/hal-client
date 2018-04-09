@@ -6,6 +6,7 @@
   "author": "Marcel Hoyer <m.hoyer@pixelplastic.de>",
   "license": "MIT",
   "scripts": {
+    "lint": "tslint -t stylish ./lib/**/*.ts",
     "start": "npm test -- -w --watch-extensions ts",
     "test": "mocha -r ts-node/register lib/**/*.spec.ts"
   },
@@ -23,6 +24,7 @@
     "sinon": "^4.5.0",
     "sinon-chai": "^3.0.0",
     "ts-node": "^5.0.1",
+    "tslint": "^5.9.1",
     "typescript": "^2.8.1"
   }
 }

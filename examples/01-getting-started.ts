@@ -19,4 +19,4 @@ export default async () => {
         .startAt('http://...')
         .GET<RootResource>()
         .run();
-}
+};

@@ -1,12 +1,12 @@
-import { HalLink } from "./hal-link";
+import { HalLink } from './hal-link';
 
 export class HalResource<T = any> {
     _links?: {
         [key: string]: HalLink | HalLink[]
-    }
+    };
     _embedded?: {
         [key: string]: any;
-    }
+    };
 
     static findLink(res: HalResource, relName: string, relIndex = 0): HalLink {
         if (!(relName in res._links)) {
@@ -16,4 +16,4 @@ export class HalResource<T = any> {
         const links = [].concat(res._links[relName]) as HalLink[];
         return links[relIndex];
     }
-};
+}

@@ -1,7 +1,7 @@
-import { expect } from "chai";
-import * as sinon from "sinon";
-import { LazyResource } from "./lazy-resource";
-import { ResourceFetcher } from "./resource-fetcher";
+import { expect } from 'chai';
+import * as sinon from 'sinon';
+import { LazyResource } from './lazy-resource';
+import { ResourceFetcher } from './resource-fetcher';
 
 describe('Lazy Resource', () => {
     const expectedResource = {

@@ -1,7 +1,7 @@
-import { HalClient } from "./hal-client";
-import { HalResource } from "./hal-resource";
-import { HalLink } from "./hal-link";
-import { ResourceFetcher } from "./resource-fetcher";
+import { HalClient } from './hal-client';
+import { HalResource } from './hal-resource';
+import { HalLink } from './hal-link';
+import { ResourceFetcher } from './resource-fetcher';
 
 export class StaticResource {
     constructor(private halResource: HalResource, private fetchFn?: FetchFn) {

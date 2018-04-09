@@ -1,6 +1,6 @@
-import { ResourceFetcher } from "./resource-fetcher";
-import { HalResource } from "./hal-resource";
-import { HalLink } from "./hal-link";
+import { ResourceFetcher } from './resource-fetcher';
+import { HalResource } from './hal-resource';
+import { HalLink } from './hal-link';
 
 export class LazyResource<T = {}> {
     constructor(private urlFn: LazyPromise<{url: string, ri: RequestInit}>, private fetchFn?: FetchFn) {

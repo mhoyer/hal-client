@@ -1,8 +1,8 @@
-import * as sinon from "sinon";
-import { expect } from "chai";
+import * as sinon from 'sinon';
+import { expect } from 'chai';
 
-import { ResourceFetcher } from "./resource-fetcher";
-import { LazyResource } from "./lazy-resource";
+import { ResourceFetcher } from './resource-fetcher';
+import { LazyResource } from './lazy-resource';
 
 describe('Resource Fetcher', () => {
     const expectedResource = 'any resource';

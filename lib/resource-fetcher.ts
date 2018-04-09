@@ -1,4 +1,4 @@
-import { LazyResource } from "./lazy-resource";
+import { LazyResource } from './lazy-resource';
 
 export class ResourceFetcher {
     constructor(private urlFn: LazyPromise<string>, private fetchFn?: FetchFn) {
@@ -16,7 +16,7 @@ export class ResourceFetcher {
 
     POST<T = {}>(payload?, requestInit: RequestInit = {}): LazyResource<T> {
         const ri = Object.assign({}, requestInit, { method: 'POST' });
-        if(payload) {
+        if (payload) {
             ri.body = JSON.stringify(payload);
         }
 
@@ -25,7 +25,7 @@ export class ResourceFetcher {
 
     PUT<T = {}>(payload?, requestInit: RequestInit = {}): LazyResource<T> {
         const ri = Object.assign({}, requestInit, { method: 'PUT' });
-        if(payload) {
+        if (payload) {
             ri.body = JSON.stringify(payload);
         }
 

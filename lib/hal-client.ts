@@ -1,6 +1,6 @@
-import { ResourceFetcher } from "./resource-fetcher";
-import { HalResource } from "./hal-resource";
-import { StaticResource } from "./static-resource";
+import { ResourceFetcher } from './resource-fetcher';
+import { HalResource } from './hal-resource';
+import { StaticResource } from './static-resource';
 
 export class HalClient {
     static startAt(entryUrl: string, fetchFn?: FetchFn): ResourceFetcher {
