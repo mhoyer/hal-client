@@ -1,6 +1,6 @@
 import { HalLink } from './hal-link';
 
-export class HalResource<T = any> {
+export class HalResource {
     _links?: {
         [key: string]: HalLink | HalLink[]
     };

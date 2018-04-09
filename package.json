@@ -6,6 +6,8 @@
   "author": "Marcel Hoyer <m.hoyer@pixelplastic.de>",
   "license": "MIT",
   "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "build:prod": "npm run lint && npm run test && npm run build",
     "lint": "tslint -t stylish ./lib/**/*.ts",
     "start": "npm test -- -w --watch-extensions ts",
     "test": "mocha -r ts-node/register lib/**/*.spec.ts"

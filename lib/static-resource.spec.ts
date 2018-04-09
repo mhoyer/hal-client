@@ -1,7 +1,6 @@
 import { expect } from 'chai';
 import * as sinon from 'sinon';
 
-import { LazyResource } from './lazy-resource';
 import { ResourceFetcher } from './resource-fetcher';
 import { StaticResource } from './static-resource';
 
@@ -23,10 +22,9 @@ describe('Static Resource', () => {
     });
 
     describe(`.follow()`, () => {
-
         it('does not `fetch`', () => {
             const sut = new StaticResource(expectedResource, fetchSpy);
-            const result = sut.follow('foo');
+            sut.follow('foo');
             expect(fetchSpy).not.called;
         });
 

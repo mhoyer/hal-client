@@ -5,8 +5,8 @@
     ],
     "compilerOptions": {
         "lib": [ "dom", "es2015" ],
-        "outDir": "./dist",
-        "removeComments": true,
+        "noUnusedLocals": true,
+        "noUnusedParameters": true,
         "target": "es5",
     }
 }

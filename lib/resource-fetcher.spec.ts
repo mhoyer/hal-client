@@ -14,7 +14,7 @@ describe('Resource Fetcher', () => {
     });
 
     it('does not `fetch` on creation', () => {
-        const sut = new ResourceFetcher(() => Promise.resolve('url'), fetchSpy);
+        new ResourceFetcher(() => Promise.resolve('url'), fetchSpy);
         expect(fetchSpy).not.called;
     });
 
@@ -39,6 +39,7 @@ describe('Resource Fetcher', () => {
                 return result.then(res => {
                     expect(fetchSpy).calledOnce;
                     expect(fetchSpy).calledWith('url', { method, body: 'body' });
+                    expect(res).to.be.ok;
                 });
             });
 
@@ -49,6 +50,7 @@ describe('Resource Fetcher', () => {
                 return result.then(res => {
                     expect(fetchSpy).calledOnce;
                     expect(fetchSpy).calledWith('url', {method});
+                    expect(res).to.be.ok;
                 });
             });
         });
@@ -75,6 +77,7 @@ describe('Resource Fetcher', () => {
                 return result.then(res => {
                     expect(fetchSpy).calledOnce;
                     expect(fetchSpy).calledWith('url', { method, body: '"payload"' });
+                    expect(res).to.be.ok;
                 });
             });
 
@@ -85,6 +88,7 @@ describe('Resource Fetcher', () => {
                 return result.then(res => {
                     expect(fetchSpy).calledOnce;
                     expect(fetchSpy).calledWith('url', { method, mode: 'cors' });
+                    expect(res).to.be.ok;
                 });
             });
 
@@ -95,6 +99,7 @@ describe('Resource Fetcher', () => {
                 return result.then(res => {
                     expect(fetchSpy).calledOnce;
                     expect(fetchSpy).calledWith('url', {method});
+                    expect(res).to.be.ok;
                 });
             });
         });

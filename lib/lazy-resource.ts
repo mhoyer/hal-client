@@ -16,7 +16,7 @@ export class LazyResource<T = {}> {
         return new ResourceFetcher(urlFn, this.fetchFn);
     }
 
-    run(): Promise<T & HalResource<T>> {
+    run(): Promise<T & HalResource> {
         return this.urlFn().then(({url, ri}) => {
             return this.fetchFn(url, ri).then(r => r.json());
         });

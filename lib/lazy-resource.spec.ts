@@ -53,7 +53,7 @@ describe('Lazy Resource', () => {
 
         it('does not `fetch`', () => {
             const sut = new LazyResource(() => Promise.resolve({ url: 'url', ri: {}}), fetchSpy);
-            const result = sut.follow('foo');
+            sut.follow('foo');
             expect(fetchSpy).not.called;
         });
 
