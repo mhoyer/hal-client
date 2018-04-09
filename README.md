@@ -75,26 +75,30 @@ Start the declaration of resource fetching chain based on an existing HAL resouc
 
 ### ResourceFetcher
 
-#### request(requestInit?: RequestInit)
+#### request<T>(requestInit?: RequestInit)
+
 Declares a lazy HTTP operation to be invoked later.
 
 - `requestInit` - (optional) [`RequestInit`](https://developer.mozilla.org/en-US/docs/Web/API/WindowOrWorkerGlobalScope/fetch#Syntax) instance to customize `fetch` call.
 
 *Returns* a new [`LazyResource`](#LazyResource) instance.
 
-#### GET(requestInit?: RequestInit)
+The optional generic type `<T>` can be used to get a typed `Promise` when
+later executing the chain with `run()`.
+
+#### GET<T>(requestInit?: RequestInit)
 
 See `request()`
 
-#### PUT(requestInit?: RequestInit)
+#### PUT<T>(requestInit?: RequestInit)
 
 See `request()`
 
-#### POST(requestInit?: RequestInit)
+#### POST<T>(requestInit?: RequestInit)
 
 See `request()`
 
-#### DELETE(requestInit?: RequestInit)
+#### DELETE<T>(requestInit?: RequestInit)
 
 See `request()`
 
@@ -126,9 +130,6 @@ Defines a follow operation.
 
 #### run()
 
-Start the declaration of resource fetching chain based on an existing HAL resouce instance.
+Executes the defined chain of resource requests.
 
-- `res` - a materialized `HalResource`, obviously with a `_links` property.
-- `fetchFn` - (optional) `Function` following the whatwg spec for the Fetch API. When omitted it will use `window.fetch` if defined.
-
-*Returns* a new [`StaticResource`](#StaticResource) instance.
+*Returns* a `Promise`, that resolves the most recent HAL resource of the request chain.
