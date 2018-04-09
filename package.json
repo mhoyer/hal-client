@@ -1,7 +1,8 @@
 {
   "name": "hal-client",
   "version": "0.1.0",
-  "main": "index.js",
+  "description": "A Typescript focused library to enable declarative access to HAL endpoints.",
+  "main": "index.ts",
   "author": "Marcel Hoyer <m.hoyer@pixelplastic.de>",
   "license": "MIT",
   "scripts": {
