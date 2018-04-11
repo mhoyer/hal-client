@@ -40,7 +40,7 @@ describe('HAL Client', () => {
 
         describe('Integrational tests', () => {
             it('supports direct run', () => {
-                const result = HalClient.startAt('url').GET<string>().run();
+                const result = HalClient.startAt('url').GET().run();
 
                 return result.then(res => {
                     expect(fetchSpy).calledOnce;
@@ -50,7 +50,7 @@ describe('HAL Client', () => {
             });
 
             it('supports late separated runs', async () => {
-                const lazyRootRes = HalClient.startAt('url').GET<string>();
+                const lazyRootRes = HalClient.startAt('url').GET();
                 const fooRes = await lazyRootRes.follow('foo').GET<any>().run();
                 const barRes = await lazyRootRes.follow('bar').GET<any>().run();
 
@@ -65,7 +65,7 @@ describe('HAL Client', () => {
             });
 
             it('supports following link rels', () => {
-                const result = HalClient.startAt('url').GET<string>()
+                const result = HalClient.startAt('url').GET()
                     .follow('foo', {x: 12}, 1).GET()
                     .run();
 
@@ -75,6 +75,19 @@ describe('HAL Client', () => {
                     expect(fetchSpy).calledWith('http://example.com/12');
 
                     expect(res).to.equal(expectedResource);
+                });
+            });
+
+            it('rejects in case a link rel was not found', () => {
+                const result = HalClient.startAt('url').GET()
+                    .follow('not-existing').GET()
+                    .run();
+
+                return result.catch((err: Error) => {
+                    expect(fetchSpy).calledOnce;
+                    expect(fetchSpy).calledWith('url');
+
+                    expect(err.message).to.equal(`Unable to find link relation 'not-existing'`);
                 });
             });
         });
