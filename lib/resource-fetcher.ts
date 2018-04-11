@@ -2,15 +2,20 @@ import { HalClient } from './hal-client';
 import { LazyResource } from './lazy-resource';
 
 export class ResourceFetcher {
-    constructor(private lazyUrlPromise: LazyPromise<string>) {
+    constructor(
+        private lazyUrlPromise: LazyPromise<string>,
+        private trace: string[] = []) {
     }
 
     request<T = {}>(requestInit: RequestInit = {}): LazyResource<T> {
         const lazyHalResPromise = () => this.lazyUrlPromise()
-            .then(url => HalClient.fetchFn(url, requestInit))
+            .then(url => {
+                this.trace.push(`${requestInit.method} ${url}`);
+                return HalClient.fetchFn(url, requestInit);
+            })
             .then(response => response.json());
 
-        return new LazyResource<T>(lazyHalResPromise);
+        return new LazyResource<T>(lazyHalResPromise, this.trace);
     }
 
     GET<T = {}>(requestInit: RequestInit = {}): LazyResource<T> {

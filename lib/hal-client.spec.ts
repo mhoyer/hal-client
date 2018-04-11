@@ -13,10 +13,10 @@ describe('HAL Client', () => {
     const expectedResource = {
         _links: {
             foo: [
-                { href: 'http://example.com/foo' },
-                { href: 'http://example.com/{x}', templated: true }
+                { href: 'http://api/foo' },
+                { href: 'http://api/{x}', templated: true }
             ],
-            bar: { href: 'http://example.com/bar' }
+            bar: { href: 'http://api/bar' }
         }
     };
     let fetchSpy: sinon.SinonSpy;
@@ -29,101 +29,104 @@ describe('HAL Client', () => {
 
     describe(`startAt('http://...')`, () => {
         it('does not `fetch`', () => {
-            HalClient.startAt('url');
+            HalClient.startAt('http://api/');
             expect(fetchSpy).not.called;
         });
 
         it('creates a `ResourceFetcher` instance', () => {
-            const result = HalClient.startAt('url');
+            const result = HalClient.startAt('http://api/');
             expect(result).to.be.instanceof(ResourceFetcher);
         });
 
         describe('Integrational tests', () => {
             it('supports direct run', () => {
-                const result = HalClient.startAt('url').GET().run();
+                const result = HalClient.startAt('http://api/').GET().run();
 
                 return result.then(res => {
                     expect(fetchSpy).calledOnce;
-                    expect(fetchSpy).calledWith('url', {method: 'GET'});
+                    expect(fetchSpy).calledWith('http://api/', {method: 'GET'});
                     expect(res).to.equal(expectedResource);
                 });
             });
 
             it('supports late separated runs', async () => {
-                const lazyRootRes = HalClient.startAt('url').GET();
+                const lazyRootRes = HalClient.startAt('http://api/').GET();
                 const fooRes = await lazyRootRes.follow('foo').GET<any>().run();
                 const barRes = await lazyRootRes.follow('bar').GET<any>().run();
 
                 expect(fetchSpy).callCount(4);
-                expect(fetchSpy.getCall(0)).calledWith('url');
-                expect(fetchSpy.getCall(1)).calledWith('http://example.com/foo');
-                expect(fetchSpy.getCall(2)).calledWith('url');
-                expect(fetchSpy.getCall(3)).calledWith('http://example.com/bar');
+                expect(fetchSpy.getCall(0)).calledWith('http://api/');
+                expect(fetchSpy.getCall(1)).calledWith('http://api/foo');
+                expect(fetchSpy.getCall(2)).calledWith('http://api/');
+                expect(fetchSpy.getCall(3)).calledWith('http://api/bar');
 
                 expect(fooRes).to.equal(expectedResource);
                 expect(barRes).to.equal(expectedResource);
             });
 
             it('supports following link rels', () => {
-                const result = HalClient.startAt('url').GET()
+                const result = HalClient.startAt('http://api/').GET()
                     .follow('foo', {x: 42}, 1).GET()
                     .run();
 
                 return result.then(res => {
                     expect(fetchSpy).calledTwice;
-                    expect(fetchSpy.getCall(0)).calledWith('url');
-                    expect(fetchSpy.getCall(1)).calledWith('http://example.com/42');
+                    expect(fetchSpy.getCall(0)).calledWith('http://api/');
+                    expect(fetchSpy.getCall(1)).calledWith('http://api/42');
 
                     expect(res).to.equal(expectedResource);
                 });
             });
 
             it('supports following multiple link rels', () => {
-                const result = HalClient.startAt('url').GET()
+                const result = HalClient.startAt('http://api/').GET()
                     .follow('foo', {x: 42}, 1).GET()
                     .follow('foo', {x: 23}, 1).GET()
                     .run();
 
                 return result.then(res => {
                     expect(fetchSpy).calledThrice;
-                    expect(fetchSpy.getCall(0)).calledWith('url');
-                    expect(fetchSpy.getCall(1)).calledWith('http://example.com/42');
-                    expect(fetchSpy.getCall(2)).calledWith('http://example.com/23');
+                    expect(fetchSpy.getCall(0)).calledWith('http://api/');
+                    expect(fetchSpy.getCall(1)).calledWith('http://api/42');
+                    expect(fetchSpy.getCall(2)).calledWith('http://api/23');
 
                     expect(res).to.equal(expectedResource);
                 });
             });
 
             it('rejects in case a link rel was not found earlier', () => {
-                const result = HalClient.startAt('url').GET()
+                const result = HalClient.startAt('http://api/').GET()
                     .follow('not-existing').GET()
                     .follow('foo').GET()
                     .run();
 
                 return result.catch((err: Error) => {
                     expect(fetchSpy).calledOnce;
-                    expect(fetchSpy).calledWith('url');
+                    expect(fetchSpy).calledWith('http://api/');
 
-                    expect(err.message).to.equal(`Unable to find link relation 'not-existing'`);
+                    expect(err.message).to.equal(`Unable to find link relation 'not-existing':\n`
+                        + `  - GET http://api/ => follow 'not-existing' => ✘`);
                 });
             });
 
             it('rejects in case a link rel was not found later', () => {
-                const result = HalClient.startAt('url').GET()
+                const result = HalClient.startAt('http://api/').GET()
                     .follow('foo').GET()
                     .follow('not-existing').GET()
                     .run();
 
                 return result.catch((err: Error) => {
                     expect(fetchSpy).calledTwice;
-                    expect(fetchSpy).calledWith('url');
+                    expect(fetchSpy).calledWith('http://api/');
 
-                    expect(err.message).to.equal(`Unable to find link relation 'not-existing'`);
+                    expect(err.message).to.equal(`Unable to find link relation 'not-existing':\n`
+                        + `  - GET http://api/ => follow 'foo'\n`
+                        + `  - GET http://api/foo => follow 'not-existing' => ✘`);
                 });
             });
 
             it('supports default values using `.catch` in case of a rejection', () => {
-                const result = HalClient.startAt('url').GET()
+                const result = HalClient.startAt('http://api/').GET()
                     .follow('foo').GET()
                     .follow('not-existing').GET()
                     .run()
@@ -131,7 +134,7 @@ describe('HAL Client', () => {
 
                 return result.then((res) => {
                     expect(fetchSpy).calledTwice;
-                    expect(fetchSpy).calledWith('url');
+                    expect(fetchSpy).calledWith('http://api/');
 
                     expect(res).to.equal('default');
                 });
@@ -167,7 +170,7 @@ describe('HAL Client', () => {
 
                 return result.then(res => {
                     expect(fetchSpy).calledOnce;
-                    expect(fetchSpy).calledWith('http://example.com/foo');
+                    expect(fetchSpy).calledWith('http://api/foo');
 
                     expect(res).to.equal(expectedResource);
                 });
