@@ -66,13 +66,29 @@ describe('HAL Client', () => {
 
             it('supports following link rels', () => {
                 const result = HalClient.startAt('url').GET()
-                    .follow('foo', {x: 12}, 1).GET()
+                    .follow('foo', {x: 42}, 1).GET()
                     .run();
 
                 return result.then(res => {
                     expect(fetchSpy).calledTwice;
-                    expect(fetchSpy).calledWith('url');
-                    expect(fetchSpy).calledWith('http://example.com/12');
+                    expect(fetchSpy.getCall(0)).calledWith('url');
+                    expect(fetchSpy.getCall(1)).calledWith('http://example.com/42');
+
+                    expect(res).to.equal(expectedResource);
+                });
+            });
+
+            it('supports following multiple link rels', () => {
+                const result = HalClient.startAt('url').GET()
+                    .follow('foo', {x: 42}, 1).GET()
+                    .follow('foo', {x: 23}, 1).GET()
+                    .run();
+
+                return result.then(res => {
+                    expect(fetchSpy).calledThrice;
+                    expect(fetchSpy.getCall(0)).calledWith('url');
+                    expect(fetchSpy.getCall(1)).calledWith('http://example.com/42');
+                    expect(fetchSpy.getCall(2)).calledWith('http://example.com/23');
 
                     expect(res).to.equal(expectedResource);
                 });
