@@ -78,13 +78,28 @@ describe('HAL Client', () => {
                 });
             });
 
-            it('rejects in case a link rel was not found', () => {
+            it('rejects in case a link rel was not found earlier', () => {
                 const result = HalClient.startAt('url').GET()
                     .follow('not-existing').GET()
+                    .follow('foo').GET()
                     .run();
 
                 return result.catch((err: Error) => {
                     expect(fetchSpy).calledOnce;
+                    expect(fetchSpy).calledWith('url');
+
+                    expect(err.message).to.equal(`Unable to find link relation 'not-existing'`);
+                });
+            });
+
+            it('rejects in case a link rel was not found later', () => {
+                const result = HalClient.startAt('url').GET()
+                    .follow('foo').GET()
+                    .follow('not-existing').GET()
+                    .run();
+
+                return result.catch((err: Error) => {
+                    expect(fetchSpy).calledTwice;
                     expect(fetchSpy).calledWith('url');
 
                     expect(err.message).to.equal(`Unable to find link relation 'not-existing'`);
