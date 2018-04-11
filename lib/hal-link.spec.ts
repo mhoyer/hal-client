@@ -1,5 +1,6 @@
-import { HalLink } from './hal-link';
 import { expect } from 'chai';
+
+import { HalLink } from './hal-link';
 
 describe('HalLink', () => {
     describe('applyTemplateParams', () => {

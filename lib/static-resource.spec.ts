@@ -1,6 +1,7 @@
 import { expect } from 'chai';
 import * as sinon from 'sinon';
 
+import { HalClient } from './hal-client';
 import { ResourceFetcher } from './resource-fetcher';
 import { StaticResource } from './static-resource';
 
@@ -19,23 +20,24 @@ describe('Static Resource', () => {
     beforeEach('init `fetch` spy', () => {
         const fetchPromise = Promise.resolve({ json: () => expectedResource });
         fetchSpy = sinon.spy(() => fetchPromise);
+        HalClient.fetchFn = fetchSpy;
     });
 
     describe(`.follow()`, () => {
         it('does not `fetch`', () => {
-            const sut = new StaticResource(expectedResource, fetchSpy);
+            const sut = new StaticResource(expectedResource);
             sut.follow('foo');
             expect(fetchSpy).not.called;
         });
 
         it('creates a `ResourceFetcher` instance', () => {
-            const sut = new StaticResource(expectedResource, fetchSpy);
+            const sut = new StaticResource(expectedResource);
             const result = sut.follow('foo');
             expect(result).to.be.instanceof(ResourceFetcher);
         });
 
         it('invokes `fetch` twice when running', () => {
-            const sut = new StaticResource(expectedResource, fetchSpy);
+            const sut = new StaticResource(expectedResource);
             const result = sut.follow('foo').GET().run();
 
             return result.then(res => {
@@ -47,7 +49,7 @@ describe('Static Resource', () => {
         });
 
         it('supports URI templates and link index selection', () => {
-            const sut = new StaticResource(expectedResource, fetchSpy);
+            const sut = new StaticResource(expectedResource);
             const result = sut
                 .follow('foo', {x: 12}, 1).GET()
                 .run();

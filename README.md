@@ -21,7 +21,15 @@ No special setup is required when using Browsers that already support `fetch` AP
 
 As Node.js does not ship with an implementation of `fetch` you have to fill that gap using existing NPM packages. See: https://www.npmjs.com/search?q=fetch
 
-The `HalClient.startAt()` and `HalClient.fromHalRes()` functions support passing in a custom `fetch` function.
+### Custom `fetch`
+
+Using `HalClient.fetchFn` property you can set a custom `fetch` function. E.g. this is used for testing this library:
+
+```
+const fetchPromise = Promise.resolve({ json: () => 'expected' });
+fetchSpy = sinon.spy(() => fetchPromise);
+HalClient.fetchFn = fetchSpy;
+```
 
 ## Usage
 
@@ -55,21 +63,19 @@ You can find more scenarios in the [`./examples`](./examples) folder.
 
 The entry point for defining HAL traversal operations.
 
-#### startAt(entryUrl, fetchFn?)
+#### startAt(entryUrl)
 
 Start the declaration of HAL resource fetching chain with a given URL.
 
 - `entryUrl` - a `string` representing the absolute URL to the API endpoint
-- `fetchFn` - (optional) `Function` following the whatwg spec for the Fetch API. When omitted it will use `window.fetch` if defined.
 
 *Returns* a new [`ResourceFetcher`](#ResourceFetcher) instance.
 
-#### fromHalRes(res: HalResource, fetchFn?)
+#### fromHalRes(res: HalResource)
 
 Start the declaration of resource fetching chain based on an existing HAL resouce instance.
 
 - `res` - a materialized `HalResource`, obviously with a `_links` property.
-- `fetchFn` - (optional) `Function` following the whatwg spec for the Fetch API. When omitted it will use `window.fetch` if defined.
 
 *Returns* a new [`StaticResource`](#StaticResource) instance.
 

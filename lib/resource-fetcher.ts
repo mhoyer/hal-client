@@ -1,12 +1,12 @@
 import { LazyResource } from './lazy-resource';
 
 export class ResourceFetcher {
-    constructor(private urlFn: LazyPromise<string>, private fetchFn?: FetchFn) {
+    constructor(private urlFn: LazyPromise<string>) {
     }
 
     request<T = {}>(requestInit: RequestInit = {}): LazyResource<T> {
         const urlFn = () => this.urlFn().then(url => ({ url, ri: requestInit}));
-        return new LazyResource<T>(urlFn, this.fetchFn);
+        return new LazyResource<T>(urlFn);
     }
 
     GET<T = {}>(requestInit: RequestInit = {}): LazyResource<T> {

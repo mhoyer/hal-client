@@ -24,22 +24,23 @@ describe('HAL Client', () => {
     beforeEach('init with `fetch` spy', () => {
         const fetchPromise = Promise.resolve({ json: () => expectedResource });
         fetchSpy = sinon.spy(() => fetchPromise);
+        HalClient.fetchFn = fetchSpy;
     });
 
     describe(`startAt('http://...')`, () => {
         it('does not `fetch`', () => {
-            HalClient.startAt('url', fetchSpy);
+            HalClient.startAt('url');
             expect(fetchSpy).not.called;
         });
 
         it('creates a `ResourceFetcher` instance', () => {
-            const result = HalClient.startAt('url', fetchSpy);
+            const result = HalClient.startAt('url');
             expect(result).to.be.instanceof(ResourceFetcher);
         });
 
         describe('Integrational tests', () => {
             it('supports direct run', () => {
-                const result = HalClient.startAt('url', fetchSpy).GET<string>().run();
+                const result = HalClient.startAt('url').GET<string>().run();
 
                 return result.then(res => {
                     expect(fetchSpy).calledOnce;
@@ -49,7 +50,7 @@ describe('HAL Client', () => {
             });
 
             it('supports late separated runs', async () => {
-                const lazyRootRes = HalClient.startAt('url', fetchSpy).GET<string>();
+                const lazyRootRes = HalClient.startAt('url').GET<string>();
                 const fooRes = await lazyRootRes.follow('foo').GET<any>().run();
                 const barRes = await lazyRootRes.follow('bar').GET<any>().run();
 
@@ -64,7 +65,7 @@ describe('HAL Client', () => {
             });
 
             it('supports following link rels', () => {
-                const result = HalClient.startAt('url', fetchSpy).GET<string>()
+                const result = HalClient.startAt('url').GET<string>()
                     .follow('foo', {x: 12}, 1).GET()
                     .run();
 
@@ -81,18 +82,18 @@ describe('HAL Client', () => {
 
     describe(`fromHalRes()`, () => {
         it('does not `fetch`', () => {
-            HalClient.fromHalRes({}, fetchSpy);
+            HalClient.fromHalRes({});
             expect(fetchSpy).not.called;
         });
 
         it('creates a `StaticResource` instance', () => {
-            const result = HalClient.fromHalRes({}, fetchSpy);
+            const result = HalClient.fromHalRes({});
             expect(result).to.be.instanceof(StaticResource);
         });
 
         describe('Integrational tests', () => {
             it('supports following link rels', () => {
-                const result = HalClient.fromHalRes(expectedResource, fetchSpy)
+                const result = HalClient.fromHalRes(expectedResource)
                     .follow('foo').GET()
                     .run();
 

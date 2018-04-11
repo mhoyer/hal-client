@@ -1,10 +1,10 @@
 import { ResourceFetcher } from './resource-fetcher';
 import { HalResource } from './hal-resource';
 import { HalLink } from './hal-link';
+import { HalClient } from './hal-client';
 
 export class LazyResource<T = {}> {
-    constructor(private urlFn: LazyPromise<{url: string, ri: RequestInit}>, private fetchFn?: FetchFn) {
-        this.fetchFn = fetchFn || (window && window.fetch);
+    constructor(private urlFn: LazyPromise<{url: string, ri: RequestInit}>) {
     }
 
     follow(rel: string, templateParams = {}, relIndex = 0): ResourceFetcher {
@@ -13,12 +13,12 @@ export class LazyResource<T = {}> {
             const url =  HalLink.applyTemplateParams(link, templateParams);
             return Promise.resolve(url);
         });
-        return new ResourceFetcher(urlFn, this.fetchFn);
+        return new ResourceFetcher(urlFn);
     }
 
     run(): Promise<T & HalResource> {
         return this.urlFn().then(({url, ri}) => {
-            return this.fetchFn(url, ri).then(r => r.json());
+            return HalClient.fetchFn(url, ri).then(r => r.json());
         });
     }
 }

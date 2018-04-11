@@ -1,8 +1,9 @@
 import * as sinon from 'sinon';
 import { expect } from 'chai';
 
-import { ResourceFetcher } from './resource-fetcher';
+import { HalClient } from './hal-client';
 import { LazyResource } from './lazy-resource';
+import { ResourceFetcher } from './resource-fetcher';
 
 describe('Resource Fetcher', () => {
     const expectedResource = 'any resource';
@@ -11,29 +12,30 @@ describe('Resource Fetcher', () => {
     beforeEach('init `fetch` spy', () => {
         const fetchPromise = Promise.resolve({ json: () => expectedResource });
         fetchSpy = sinon.spy(() => fetchPromise);
+        HalClient.fetchFn = fetchSpy;
     });
 
     it('does not `fetch` on creation', () => {
-        new ResourceFetcher(() => Promise.resolve('url'), fetchSpy);
+        new ResourceFetcher(() => Promise.resolve('url'));
         expect(fetchSpy).not.called;
     });
 
     ['GET', 'DELETE'].map(method => {
         describe(`.${method}()`, () => {
             it('does not `fetch`', () => {
-                const sut = new ResourceFetcher(() => Promise.resolve('url'), fetchSpy);
+                const sut = new ResourceFetcher(() => Promise.resolve('url'));
                 sut[method]();
                 expect(fetchSpy).not.called;
             });
 
             it('creates a `LazyResource` instance', () => {
-                const sut = new ResourceFetcher(() => Promise.resolve('url'), fetchSpy);
+                const sut = new ResourceFetcher(() => Promise.resolve('url'));
                 const result = sut[method]();
                 expect(result).to.be.instanceof(LazyResource);
             });
 
             it('supports passing request info values', () => {
-                const sut = new ResourceFetcher(() => Promise.resolve('url'), fetchSpy);
+                const sut = new ResourceFetcher(() => Promise.resolve('url'));
                 const result = sut[method]({ body: 'body' }).run();
 
                 return result.then(res => {
@@ -44,7 +46,7 @@ describe('Resource Fetcher', () => {
             });
 
             it('overwrites `method` property of request info', () => {
-                const sut = new ResourceFetcher(() => Promise.resolve('url'), fetchSpy);
+                const sut = new ResourceFetcher(() => Promise.resolve('url'));
                 const result = sut[method]({ method: 'POST' }).run();
 
                 return result.then(res => {
@@ -59,19 +61,19 @@ describe('Resource Fetcher', () => {
     ['POST', 'PUT'].map(method => {
         describe(`.${method}()`, () => {
             it('does not `fetch`', () => {
-                const sut = new ResourceFetcher(() => Promise.resolve('url'), fetchSpy);
+                const sut = new ResourceFetcher(() => Promise.resolve('url'));
                 sut[method]();
                 expect(fetchSpy).not.called;
             });
 
             it('creates a `LazyResource` instance', () => {
-                const sut = new ResourceFetcher(() => Promise.resolve('url'), fetchSpy);
+                const sut = new ResourceFetcher(() => Promise.resolve('url'));
                 const result = sut[method]();
                 expect(result).to.be.instanceof(LazyResource);
             });
 
             it('supports passing a payload', () => {
-                const sut = new ResourceFetcher(() => Promise.resolve('url'), fetchSpy);
+                const sut = new ResourceFetcher(() => Promise.resolve('url'));
                 const result = sut[method]('payload').run();
 
                 return result.then(res => {
@@ -82,8 +84,8 @@ describe('Resource Fetcher', () => {
             });
 
             it('supports passing request info values', () => {
-                const sut = new ResourceFetcher(() => Promise.resolve('url'), fetchSpy);
-                const result = sut[method](undefined, { mode: 'cors' } as RequestInit).run();
+                const sut = new ResourceFetcher(() => Promise.resolve('url'));
+                const result = sut[method](undefined, { mode: 'cors' }).run();
 
                 return result.then(res => {
                     expect(fetchSpy).calledOnce;
@@ -93,7 +95,7 @@ describe('Resource Fetcher', () => {
             });
 
             it('overwrites `method` property of request info', () => {
-                const sut = new ResourceFetcher(() => Promise.resolve('url'), fetchSpy);
+                const sut = new ResourceFetcher(() => Promise.resolve('url'));
                 const result = sut[method](undefined, { method: 'POST' }).run();
 
                 return result.then(res => {

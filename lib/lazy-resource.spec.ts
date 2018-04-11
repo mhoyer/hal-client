@@ -1,5 +1,7 @@
 import { expect } from 'chai';
 import * as sinon from 'sinon';
+
+import { HalClient } from './hal-client';
 import { LazyResource } from './lazy-resource';
 import { ResourceFetcher } from './resource-fetcher';
 
@@ -18,11 +20,12 @@ describe('Lazy Resource', () => {
     beforeEach('init `fetch` spy', () => {
         const fetchPromise = Promise.resolve({ json: () => expectedResource });
         fetchSpy = sinon.spy(() => fetchPromise);
+        HalClient.fetchFn = fetchSpy;
     });
 
     describe(`.run()`, () => {
         it('calls `fetch`', () => {
-            const sut = new LazyResource(() => Promise.resolve({ url: 'url', ri: {}}), fetchSpy);
+            const sut = new LazyResource(() => Promise.resolve({ url: 'url', ri: {}}));
             const result = sut.run();
 
             return result.then(res => {
@@ -33,7 +36,7 @@ describe('Lazy Resource', () => {
         });
 
         it('supports late separated runs', async () => {
-            const sut = new LazyResource(() => Promise.resolve({ url: 'url', ri: {}}), fetchSpy);
+            const sut = new LazyResource(() => Promise.resolve({ url: 'url', ri: {}}));
 
             const fooRes = await sut.follow('foo').GET<any>().run();
             const barRes = await sut.follow('bar').GET<any>().run();
@@ -52,19 +55,19 @@ describe('Lazy Resource', () => {
     describe(`.follow()`, () => {
 
         it('does not `fetch`', () => {
-            const sut = new LazyResource(() => Promise.resolve({ url: 'url', ri: {}}), fetchSpy);
+            const sut = new LazyResource(() => Promise.resolve({ url: 'url', ri: {}}));
             sut.follow('foo');
             expect(fetchSpy).not.called;
         });
 
         it('creates a `ResourceFetcher` instance', () => {
-            const sut = new LazyResource(() => Promise.resolve({ url: 'url', ri: {}}), fetchSpy);
+            const sut = new LazyResource(() => Promise.resolve({ url: 'url', ri: {}}));
             const result = sut.follow('foo');
             expect(result).to.be.instanceof(ResourceFetcher);
         });
 
         it('invokes `fetch` twice when running', () => {
-            const sut = new LazyResource(() => Promise.resolve({ url: 'url', ri: {}}), fetchSpy);
+            const sut = new LazyResource(() => Promise.resolve({ url: 'url', ri: {}}));
             const result = sut.follow('foo').GET().run();
 
             return result.then(res => {
@@ -77,7 +80,7 @@ describe('Lazy Resource', () => {
         });
 
         it('supports URI templates and link index selection', () => {
-            const sut = new LazyResource(() => Promise.resolve({ url: 'url', ri: {}}), fetchSpy);
+            const sut = new LazyResource(() => Promise.resolve({ url: 'url', ri: {}}));
             const result = sut
                 .follow('foo', {x: 12}, 1).GET()
                 .run();

@@ -1,5 +1,6 @@
-import { HalResource } from './hal-resource';
 import { expect } from 'chai';
+
+import { HalResource } from './hal-resource';
 
 describe('HalResource', () => {
     describe('findLink', () => {
