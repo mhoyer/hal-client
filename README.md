@@ -69,7 +69,7 @@ Start the declaration of HAL resource fetching chain with a given URL.
 
 - `entryUrl` - a `string` representing the absolute URL to the API endpoint
 
-*Returns* a new [`ResourceFetcher`](#ResourceFetcher) instance.
+*Returns* a new [`ResourceFetcher`](#resourcefetcher) instance.
 
 #### fromHalRes(res: HalResource)
 
@@ -77,7 +77,7 @@ Start the declaration of resource fetching chain based on an existing HAL resouc
 
 - `res` - a materialized `HalResource`, obviously with a `_links` property.
 
-*Returns* a new [`StaticResource`](#StaticResource) instance.
+*Returns* a new [`StaticResource`](#staticresource) instance.
 
 ### ResourceFetcher
 
@@ -87,7 +87,7 @@ Declares a lazy HTTP operation that can be invoked later.
 
 - `requestInit` - (optional) [`RequestInit`](https://developer.mozilla.org/en-US/docs/Web/API/WindowOrWorkerGlobalScope/fetch#Syntax) instance that is used for the later `fetch` call.
 
-*Returns* a new [`LazyResource`](#LazyResource) instance.
+*Returns* a new [`LazyResource`](#lazyresource) instance.
 
 The optional generic type `<T>` can be used to get a typed `Promise` when
 later executing the chain with `run()`.
@@ -98,7 +98,7 @@ Calls `request()` with predefined `{ method: 'GET' }`.
 
 - `requestInit` - (optional) `RequestInit` instance that is used for the later `fetch` call.
 
-*Returns* a new [`LazyResource`](#LazyResource) instance.
+*Returns* a new [`LazyResource`](#lazyresource) instance.
 
 #### PUT<T>(payload?, requestInit?: RequestInit)
 
@@ -107,7 +107,7 @@ Calls `request()` with predefined `{ method: 'PUT' }`.
 - `payload` - (optional) object that will be JSON stringified and send as body
 - `requestInit` - (optional) `RequestInit` instance that is used for the later `fetch` call.
 
-*Returns* a new [`LazyResource`](#LazyResource) instance.
+*Returns* a new [`LazyResource`](#lazyresource) instance.
 
 #### POST<T>(payload?, requestInit?: RequestInit)
 
@@ -116,7 +116,7 @@ Calls `request()` with predefined `{ method: 'POST' }`.
 - `payload` - (optional) object that will be JSON stringified and send as body
 - `requestInit` - (optional) `RequestInit` instance that is used for the later `fetch` call.
 
-*Returns* a new [`LazyResource`](#LazyResource) instance.
+*Returns* a new [`LazyResource`](#lazyresource) instance.
 
 #### DELETE<T>(requestInit?: RequestInit)
 
@@ -124,7 +124,7 @@ Calls `request()` with predefined `{ method: 'DELETE' }`.
 
 - `requestInit` - (optional) `RequestInit` instance that is used for the later `fetch` call.
 
-*Returns* a new [`LazyResource`](#LazyResource) instance.
+*Returns* a new [`LazyResource`](#lazyresource) instance.
 
 ### StaticResource
 
@@ -138,7 +138,7 @@ Defines a follow operation.
 - `templateParams` - (optional) in case the matching `HalLink` is `templated`, these parameters are applied to produce the final URL
 - `relIndex` - (optional) `number` for cases where the found relation is represented as an array of `HalLink` items
 
-*Returns* a new [`ResourceFetcher`](#ResourceFetcher) instance.
+*Returns* a new [`ResourceFetcher`](#resourcefetcher) instance.
 
 ### LazyResource
 
@@ -150,7 +150,7 @@ Defines a follow operation.
 - `templateParams` - (optional) in case the matching `HalLink` is `templated`, these parameters are applied to produce the final URL
 - `relIndex` - (optional) `number` for cases where the found relation is represented as an array of `HalLink` items
 
-*Returns* a new [`ResourceFetcher`](#ResourceFetcher) instance.
+*Returns* a new [`ResourceFetcher`](#resourcefetcher) instance.
 
 #### run()
 
