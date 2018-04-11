@@ -140,6 +140,21 @@ describe('HAL Client', () => {
                 });
             });
 
+            it('resolves even if `fetch` returns with status >= 400', () => {
+                const httpErrorFetchPromise = Promise.resolve({
+                    status: 401,
+                    statusText: 'Unauthorized',
+                    json: () => Promise.resolve(expectedResource)
+                });
+                HalClient.fetchFn = sinon.spy(() => httpErrorFetchPromise);
+
+                const result = HalClient.startAt('http://api/').GET().run();
+
+                return result.then(res => {
+                    expect(res).to.equal(expectedResource);
+                });
+            });
+
             it('supports default values using `.catch` in case of a rejection', () => {
                 const result = HalClient.startAt('http://api/').GET()
                     .follow('foo').GET()
