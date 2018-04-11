@@ -6,11 +6,12 @@ export class HalClient {
     static fetchFn: FetchFn = typeof(window) !== 'undefined' && window.fetch;
 
     static startAt(entryUrl: string): ResourceFetcher {
-        const urlFn = () => Promise.resolve(entryUrl);
-        return new ResourceFetcher(urlFn);
+        const lazyUrlPromise = () => Promise.resolve(entryUrl);
+        return new ResourceFetcher(lazyUrlPromise);
     }
 
     static fromHalRes(halResource: HalResource) {
-        return new LazyResource(() => Promise.resolve(halResource));
+        const lazyHalResPromise = () => Promise.resolve(halResource);
+        return new LazyResource(lazyHalResPromise);
     }
 }
