@@ -34,26 +34,22 @@ describe('Resource Fetcher', () => {
                 expect(result).to.be.instanceof(LazyResource);
             });
 
-            it('supports passing request info values', () => {
+            it('supports passing request info values', async () => {
                 const sut = new ResourceFetcher(() => Promise.resolve('url'));
-                const result = sut[method]({ body: 'body' }).run();
+                const result = await sut[method]({ body: 'body' }).run();
 
-                return result.then(res => {
-                    expect(fetchSpy).calledOnce;
-                    expect(fetchSpy).calledWith('url', { method, body: 'body' });
-                    expect(res).to.be.ok;
-                });
+                expect(fetchSpy).calledOnce;
+                expect(fetchSpy).calledWith('url', { method, body: 'body' });
+                expect(result).to.be.ok;
             });
 
-            it('overwrites `method` property of request info', () => {
+            it('overwrites `method` property of request info', async () => {
                 const sut = new ResourceFetcher(() => Promise.resolve('url'));
-                const result = sut[method]({ method: 'POST' }).run();
+                const result = await sut[method]({ method: 'POST' }).run();
 
-                return result.then(res => {
-                    expect(fetchSpy).calledOnce;
-                    expect(fetchSpy).calledWith('url', {method});
-                    expect(res).to.be.ok;
-                });
+                expect(fetchSpy).calledOnce;
+                expect(fetchSpy).calledWith('url', {method});
+                expect(result).to.be.ok;
             });
         });
     });
@@ -72,37 +68,31 @@ describe('Resource Fetcher', () => {
                 expect(result).to.be.instanceof(LazyResource);
             });
 
-            it('supports passing a payload', () => {
+            it('supports passing a payload', async () => {
                 const sut = new ResourceFetcher(() => Promise.resolve('url'));
-                const result = sut[method]('payload').run();
+                const result = await sut[method]('payload').run();
 
-                return result.then(res => {
-                    expect(fetchSpy).calledOnce;
-                    expect(fetchSpy).calledWith('url', { method, body: '"payload"' });
-                    expect(res).to.be.ok;
-                });
+                expect(fetchSpy).calledOnce;
+                expect(fetchSpy).calledWith('url', { method, body: '"payload"' });
+                expect(result).to.be.ok;
             });
 
-            it('supports passing request info values', () => {
+            it('supports passing request info values', async () => {
                 const sut = new ResourceFetcher(() => Promise.resolve('url'));
-                const result = sut[method](undefined, { mode: 'cors' }).run();
+                const result = await sut[method](undefined, { mode: 'cors' }).run();
 
-                return result.then(res => {
-                    expect(fetchSpy).calledOnce;
-                    expect(fetchSpy).calledWith('url', { method, mode: 'cors' });
-                    expect(res).to.be.ok;
-                });
+                expect(fetchSpy).calledOnce;
+                expect(fetchSpy).calledWith('url', { method, mode: 'cors' });
+                expect(result).to.be.ok;
             });
 
-            it('overwrites `method` property of request info', () => {
+            it('overwrites `method` property of request info', async () => {
                 const sut = new ResourceFetcher(() => Promise.resolve('url'));
-                const result = sut[method](undefined, { method: 'POST' }).run();
+                const result = await sut[method](undefined, { method: 'POST' }).run();
 
-                return result.then(res => {
-                    expect(fetchSpy).calledOnce;
-                    expect(fetchSpy).calledWith('url', {method});
-                    expect(res).to.be.ok;
-                });
+                expect(fetchSpy).calledOnce;
+                expect(fetchSpy).calledWith('url', {method});
+                expect(result).to.be.ok;
             });
         });
     });
