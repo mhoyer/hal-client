@@ -105,6 +105,21 @@ describe('HAL Client', () => {
                     expect(err.message).to.equal(`Unable to find link relation 'not-existing'`);
                 });
             });
+
+            it('supports default values using `.catch` in case of a rejection', () => {
+                const result = HalClient.startAt('url').GET()
+                    .follow('foo').GET()
+                    .follow('not-existing').GET()
+                    .run()
+                    .catch(() => 'default');
+
+                return result.then((res) => {
+                    expect(fetchSpy).calledTwice;
+                    expect(fetchSpy).calledWith('url');
+
+                    expect(res).to.equal('default');
+                });
+            });
         });
     });
 
