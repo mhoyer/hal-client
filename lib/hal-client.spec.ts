@@ -104,8 +104,9 @@ describe('HAL Client', () => {
                     expect(fetchSpy).calledOnce;
                     expect(fetchSpy).calledWith('http://api/');
 
-                    expect(err.message).to.equal(`Unable to find link relation 'not-existing':\n`
-                        + `  - GET http://api/ => follow 'not-existing' => ✘`);
+                    expect(err.message).to.equal(
+                        `Unable to find link relation 'not-existing':\n` +
+                        `  - GET http://api/ => follow 'not-existing' => ✘`);
                 });
             });
 
@@ -119,9 +120,23 @@ describe('HAL Client', () => {
                     expect(fetchSpy).calledTwice;
                     expect(fetchSpy).calledWith('http://api/');
 
-                    expect(err.message).to.equal(`Unable to find link relation 'not-existing':\n`
-                        + `  - GET http://api/ => follow 'foo'\n`
-                        + `  - GET http://api/foo => follow 'not-existing' => ✘`);
+                    expect(err.message).to.equal(
+                        `Unable to find link relation 'not-existing':\n` +
+                        `  - GET http://api/ => follow 'foo'\n` +
+                        `  - GET http://api/foo => follow 'not-existing' => ✘`);
+                });
+            });
+
+            it('rejects in case `fetch` failed', () => {
+                const rejectingFetchPromise = Promise.reject(new Error('Failed to fetch'));
+                HalClient.fetchFn = sinon.spy(() => rejectingFetchPromise);
+
+                const result = HalClient.startAt('http://api/').GET().run();
+
+                return result.catch((err: Error) => {
+                    expect(err.message).to.equal(
+                        `Failed to fetch:\n` +
+                        `  - GET http://api/ => ✘`);
                 });
             });
 

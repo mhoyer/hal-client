@@ -9,14 +9,14 @@ export class LazyResource<T = {}> {
     }
 
     follow(rel: string, templateParams = {}, relIndex = 0): ResourceFetcher {
-        const urlFn = () => this.run().then(halResource => {
+        const urlFn = () => this.lazyHalResPromise().then(halResource => {
             const prettyRel = `'${rel}'` + (relIndex ? `[${relIndex}]` : '');
             this.trace.push(`follow ${prettyRel}`);
 
             const link = HalResource.findLink(halResource, rel, relIndex);
 
             if (!link) {
-                const msg = `Unable to find link relation ${prettyRel}:${this.formatTrace()} => ✘`;
+                const msg = `Unable to find link relation ${prettyRel}`;
                 return Promise.reject(new Error(msg));
             }
 
@@ -28,7 +28,11 @@ export class LazyResource<T = {}> {
     }
 
     run(): Promise<T & HalResource> {
-        return this.lazyHalResPromise();
+        return this.lazyHalResPromise()
+            .catch(err => {
+                err.message = `${err.message}:${this.formatTrace()} => ✘`;
+                return Promise.reject(err);
+            });
     }
 
     private formatTrace() {
