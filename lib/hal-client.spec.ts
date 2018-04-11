@@ -3,8 +3,8 @@ import * as sinonChai from 'sinon-chai';
 import * as chai from 'chai';
 
 import { HalClient } from './hal-client';
+import { LazyResource } from './lazy-resource';
 import { ResourceFetcher } from './resource-fetcher';
-import { StaticResource } from './static-resource';
 
 const { expect } = chai;
 chai.use(sinonChai);
@@ -125,16 +125,25 @@ describe('HAL Client', () => {
 
     describe(`fromHalRes()`, () => {
         it('does not `fetch`', () => {
-            HalClient.fromHalRes({});
+            HalClient.fromHalRes(expectedResource);
             expect(fetchSpy).not.called;
         });
 
         it('creates a `StaticResource` instance', () => {
-            const result = HalClient.fromHalRes({});
-            expect(result).to.be.instanceof(StaticResource);
+            const result = HalClient.fromHalRes(expectedResource);
+            expect(result).to.be.instanceof(LazyResource);
         });
 
         describe('Integrational tests', () => {
+            it('does not `fetch` even when instantly `.run()`', () => {
+                const result = HalClient.fromHalRes(expectedResource).run();
+
+                return result.then(res => {
+                    expect(fetchSpy).not.called;
+                    expect(res).to.equal(expectedResource);
+                });
+            });
+
             it('supports following link rels', () => {
                 const result = HalClient.fromHalRes(expectedResource)
                     .follow('foo').GET()

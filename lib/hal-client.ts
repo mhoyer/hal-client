@@ -1,6 +1,6 @@
-import { ResourceFetcher } from './resource-fetcher';
 import { HalResource } from './hal-resource';
-import { StaticResource } from './static-resource';
+import { LazyResource } from './lazy-resource';
+import { ResourceFetcher } from './resource-fetcher';
 
 export class HalClient {
     static fetchFn: FetchFn = typeof(window) !== 'undefined' && window.fetch;
@@ -11,6 +11,6 @@ export class HalClient {
     }
 
     static fromHalRes(halResource: HalResource) {
-        return new StaticResource(halResource);
+        return new LazyResource(() => Promise.resolve(halResource));
     }
 }

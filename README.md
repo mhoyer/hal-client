@@ -77,7 +77,7 @@ Start the declaration of resource fetching chain based on an existing HAL resouc
 
 - `res` - a materialized `HalResource`, obviously with a `_links` property.
 
-*Returns* a new [`StaticResource`](#staticresource) instance.
+*Returns* a new [`LazyResource`](#lazyresource) instance.
 
 ### ResourceFetcher
 
@@ -125,20 +125,6 @@ Calls `request()` with predefined `{ method: 'DELETE' }`.
 - `requestInit` - (optional) `RequestInit` instance that is used for the later `fetch` call.
 
 *Returns* a new [`LazyResource`](#lazyresource) instance.
-
-### StaticResource
-
-Start the declaration of resource fetching chain based on an existing HAL resouce instance.
-
-#### follow(rel: string, templateParams = {}, relIndex = 0)
-
-Defines a follow operation.
-
-- `rel` - the relation name to follow (a key of the object a HAL resource  `_links` property)
-- `templateParams` - (optional) in case the matching `HalLink` is `templated`, these parameters are applied to produce the final URL
-- `relIndex` - (optional) `number` for cases where the found relation is represented as an array of `HalLink` items
-
-*Returns* a new [`ResourceFetcher`](#resourcefetcher) instance.
 
 ### LazyResource
 

@@ -1,5 +1,5 @@
-import { LazyResource } from './lazy-resource';
 import { HalClient } from './hal-client';
+import { LazyResource } from './lazy-resource';
 
 export class ResourceFetcher {
     constructor(private urlFn: LazyPromise<string>) {
