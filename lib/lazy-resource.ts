@@ -16,16 +16,20 @@ export class LazyResource<T = {}> {
 
     run(): Promise<T & HalResource> {
         return this.lazyHalResPromise()
-            .then(res => {
-                while (this.trace.length > 0) this.trace.pop();
-                return res;
-            }, err => {
-                const msg = `${err.message}:${this.formatTrace()} => ✘`;
-                const error = new Error(msg);
-                error.stack = error.stack.concat('\n').concat(err.stack);
-                while (this.trace.length > 0) this.trace.pop();
-                return Promise.reject(error);
-            });
+            .then(
+                resource => {
+                    this.resetTrace();
+                    return resource;
+                },
+                err => {
+                    const msg = `${err.message}:${this.formatTrace()} => ✘`;
+                    const error = new Error(msg);
+                    error.stack = error.stack.concat('\n').concat(err.stack);
+
+                    this.resetTrace();
+
+                    return Promise.reject(error);
+                });
     }
 
     private extractUrl(halResource, rel, templateParams, relIndex) {
@@ -49,5 +53,11 @@ export class LazyResource<T = {}> {
 
             return `${prev}\n    | ${curr}`;
         }, '');
+    }
+
+    private resetTrace() {
+        while (this.trace.length > 0) {
+            this.trace.pop();
+        }
     }
 }
