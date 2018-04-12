@@ -9,13 +9,19 @@ export class ResourceFetcher {
 
     request<T = {}>(requestInit: RequestInit = {}): LazyResource<T> {
         const lazyHalResPromise = () => this.lazyUrlPromise()
-            .then(url => {
-                this.trace.push(`${requestInit.method} ${url}`);
-                return HalClient.fetchFn(url, requestInit);
-            })
-            .then(response => response.json());
+            .then(url => this.fetch(url, requestInit))
+            .then(this.extractHalResource);
 
         return new LazyResource<T>(lazyHalResPromise, this.trace);
+    }
+
+    private fetch(url: string, requestInit: RequestInit): any {
+        this.trace.push(`${requestInit.method} ${url}`);
+        return HalClient.fetchFn(url, requestInit);
+    }
+
+    private extractHalResource(response: Response): Promise<any> {
+        return response.json();
     }
 
     GET<T = {}>(requestInit: RequestInit = {}): LazyResource<T> {
