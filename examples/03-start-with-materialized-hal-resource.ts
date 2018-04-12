@@ -3,7 +3,6 @@ import { HalClient } from '..';
 // In case you already have a materialized HAL
 // resource with `_links` property:
 
-type RootResource = {};
 type NextResource = {};
 
 export default async () => {
@@ -11,9 +10,9 @@ export default async () => {
         _links: {
             next: { href: 'http://...' }
         }
-    }
+    };
 
-    const nextRes = await HalClient
+    await HalClient
         .fromHalRes(res)
         .follow('next')
         .GET<NextResource>()

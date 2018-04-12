@@ -39,19 +39,20 @@ A typical use case might look like this:
 import { HalClient } from 'hal-client';
 
 async function buyArticle() {
-    const shopClient = HalClient.startAt('http://api.shop.demo').GET();
+    const shopIndex = HalClient.startAt('http://api.shop.demo').GET();
 
     const addToCartPayload = { article: 'red shoes' };
-    await shopClient
+    await shopIndex
         .follow('shop:add-to-cart').POST(addToCartPayload)
         .run();
 
-    const order = await shopClient
+    const orderResult = await shopIndex
         .follow('shop:cart').GET()
-        .follow('shop:buy').POST<Order>()
+        .follow('shop:buy').POST<OrderResult>()
         .run();
 
-    console.log(order.status);
+    // orderResult will be of type OrderResult
+    console.log(orderResult.status);
 }
 ```
 

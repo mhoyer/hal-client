@@ -4,13 +4,13 @@ import { HalClient } from '..';
 // resource with `_links` property:
 
 type RootResource = {};
-type NextResource = {};
+type SubResource = {};
 
 export async function reuseLazyRes() {
     const root = HalClient.startAt('http://...').GET<RootResource>();
 
-    const prevRes = await root.follow('prev').GET<NextResource>().run();
-    const nextRes = await root.follow('next').GET<NextResource>().run();
+    const prevRes = await root.follow('prev').GET<SubResource>().run();
+    const nextRes = await root.follow('next').GET<SubResource>().run();
 }
 
 // **Be aware:**
@@ -23,8 +23,8 @@ export async function reuseLazyRes() {
 
 export async function reuseHalRes () {
     const rootRes = await HalClient.startAt('http://...').GET<RootResource>().run();
-    const rootResClient = HalClient.fromHalRes(rootRes);
+    const rootClient = HalClient.fromHalRes(rootRes);
 
-    const prevRes = await rootResClient.follow('prev').GET<NextResource>().run();
-    const nextRes = await rootResClient.follow('next').GET<NextResource>().run();
+    const prevRes = await rootClient.follow('prev').GET<SubResource>().run();
+    const nextRes = await rootClient.follow('next').GET<SubResource>().run();
 }
