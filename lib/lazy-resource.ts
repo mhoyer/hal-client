@@ -8,6 +8,12 @@ export class LazyResource<T = {}> {
         private trace: string[] = []) {
     }
 
+    embedded<TSub = {}>(key: string, index = 0): LazyResource<TSub & HalResource> {
+        const embeddedHalResPromise = () => this.lazyHalResPromise()
+            .then(halRes => this.extractEmbedded<TSub>(halRes, key, index));
+        return new LazyResource<TSub>(embeddedHalResPromise, this.trace);
+    }
+
     follow(rel: string, templateParams = {}, relIndex = 0): ResourceFetcher {
         const urlFn = () => this.lazyHalResPromise()
             .then(halRes => this.extractUrl(halRes, rel, templateParams, relIndex));
@@ -32,7 +38,20 @@ export class LazyResource<T = {}> {
                 });
     }
 
-    private extractUrl(halResource, rel, templateParams, relIndex) {
+    private extractEmbedded<TSub>(halResource, key: string, index: number): Promise<TSub & HalResource> {
+        const prettyEmbedded = `'${key}'` + (index ? `[${index}]` : '');
+        this.trace.push(`embedded ${prettyEmbedded}`);
+
+        const embedded = HalResource.findEmbedded(halResource, key, index);
+        if (!embedded) {
+            const msg = `Unable to find embedded resource ${prettyEmbedded}`;
+            return Promise.reject(new Error(msg));
+        }
+
+        return Promise.resolve(embedded as TSub);
+    }
+
+    private extractUrl(halResource, rel, templateParams, relIndex): Promise<string> {
         const prettyRel = `'${rel}'` + (relIndex ? `[${relIndex}]` : '');
         this.trace.push(`follow ${prettyRel}`);
 
@@ -49,7 +68,7 @@ export class LazyResource<T = {}> {
 
     private formatTrace() {
         return this.trace.reduce((prev: string, curr: string) => {
-            if (curr.indexOf('follow') === 0) return `${prev} => ${curr}`;
+            if (curr.match(/^(follow|embedded)/)) return `${prev} => ${curr}`;
 
             return `${prev}\n    | ${curr}`;
         }, '');

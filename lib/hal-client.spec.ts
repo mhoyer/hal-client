@@ -121,6 +121,37 @@ describe('HAL Client', () => {
                     `    | GET http://api/foo => follow 'not-existing' => ✘`);
             });
 
+            it('rejects in case a embedded key was not found earlier', async () => {
+                const err = await HalClient
+                    .startAt('http://api/').GET()
+                    .embedded('not-existing')
+                    .follow('foo').GET()
+                    .run().catch(e => e);
+
+                expect(fetchSpy).calledOnce;
+                expect(fetchSpy).calledWith('http://api/');
+                expect(err.message).to.equal(
+                    `Unable to find embedded resource 'not-existing':\n` +
+                    `    | GET http://api/ => embedded 'not-existing' => ✘`
+                );
+            });
+
+            it('rejects in case a embedded key was not found later', async () => {
+                const err = await HalClient
+                    .startAt('http://api/').GET()
+                    .follow('foo').GET()
+                    .embedded('not-existing')
+                    .run().catch(e => e);
+
+                expect(fetchSpy).calledTwice;
+                expect(fetchSpy).calledWith('http://api/');
+
+                expect(err.message).to.equal(
+                    `Unable to find embedded resource 'not-existing':\n` +
+                    `    | GET http://api/ => follow 'foo'\n` +
+                    `    | GET http://api/foo => embedded 'not-existing' => ✘`);
+            });
+
             it('rejects in case `fetch` failed', async () => {
                 const rejectingFetchPromise = Promise.reject(new Error('Failed to fetch'));
                 HalClient.fetchFn = sinon.spy(() => rejectingFetchPromise);
