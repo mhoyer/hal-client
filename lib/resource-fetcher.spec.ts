@@ -10,7 +10,7 @@ describe('Resource Fetcher', () => {
     let fetchSpy: sinon.SinonSpy;
 
     beforeEach('init `fetch` spy', () => {
-        const fetchPromise = Promise.resolve({ json: () => expectedResource });
+        const fetchPromise = Promise.resolve({ json: () => Promise.resolve(expectedResource) });
         fetchSpy = sinon.spy(() => fetchPromise);
         HalClient.fetchFn = fetchSpy;
     });
@@ -50,6 +50,16 @@ describe('Resource Fetcher', () => {
                 expect(fetchSpy).calledOnce;
                 expect(fetchSpy).calledWith('url', {method});
                 expect(result).to.be.ok;
+            });
+
+            it('supports empty response body', async () => {
+                const emptyResponseFetchPromise = Promise.resolve({ json: () => Promise.reject('not parsable') });
+                HalClient.fetchFn = sinon.spy(() => emptyResponseFetchPromise);
+
+                const sut = new ResourceFetcher(() => Promise.resolve('url'));
+                const result = await sut[method]({ method: 'POST' }).run();
+
+                expect(result).to.be.undefined;
             });
         });
     });

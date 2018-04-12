@@ -22,7 +22,7 @@ describe('HAL Client', () => {
     let fetchSpy: sinon.SinonSpy;
 
     beforeEach('init with `fetch` spy', () => {
-        const fetchPromise = Promise.resolve({ json: () => expectedResource });
+        const fetchPromise = Promise.resolve({ json: () => Promise.resolve(expectedResource) });
         fetchSpy = sinon.spy(() => fetchPromise);
         HalClient.fetchFn = fetchSpy;
     });

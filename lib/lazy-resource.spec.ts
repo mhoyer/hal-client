@@ -18,7 +18,7 @@ describe('Lazy Resource', () => {
     let fetchSpy: sinon.SinonSpy;
 
     beforeEach('init `fetch` spy', () => {
-        const fetchPromise = Promise.resolve({ json: () => expectedResource });
+        const fetchPromise = Promise.resolve({ json: () => Promise.resolve(expectedResource) });
         fetchSpy = sinon.spy(() => fetchPromise);
         HalClient.fetchFn = fetchSpy;
     });

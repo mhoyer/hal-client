@@ -21,7 +21,13 @@ export class ResourceFetcher {
     }
 
     private extractHalResource(response: Response): Promise<any> {
-        return response.json();
+        return response.json()
+            .catch(() => response.text)
+            .catch(err => {
+                const error = new Error(`Unable to extract HAL resource`);
+                error.stack = error.stack.concat('\n').concat(err.stack);
+                return Promise.reject(error);
+            });
     }
 
     GET<T = {}>(requestInit: RequestInit = {}): LazyResource<T> {
