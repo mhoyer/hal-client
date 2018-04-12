@@ -129,11 +129,20 @@ Calls `request()` with predefined `{ method: 'DELETE' }`.
 
 ### LazyResource
 
+#### embedded(key: string, index = 0)
+
+Defines to eventually find an embedded resource by key (and index).
+
+- `key` - the identifier to find the sub resource inside `_embedded` property of the latest HAL resource instance
+- `index` - (optional) `number` for cases where the found sub resource is an array of `HalResource` items
+
+*Returns* a new [`LazyResource`](#lazyresource) instance.
+
 #### follow(rel: string, templateParams = {}, relIndex = 0)
 
 Defines a follow operation.
 
-- `rel` - the relation name to follow (a key of the object a HAL resource  `_links` property)
+- `rel` - the relation name to follow (a key of the object a HAL resource `_links` property)
 - `templateParams` - (optional) in case the matching `HalLink` is `templated`, these parameters are applied to produce the final URL
 - `relIndex` - (optional) `number` for cases where the found relation is represented as an array of `HalLink` items
 
