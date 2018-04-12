@@ -16,10 +16,14 @@ export class LazyResource<T = {}> {
 
     run(): Promise<T & HalResource> {
         return this.lazyHalResPromise()
-            .catch(err => {
+            .then(res => {
+                while (this.trace.length > 0) this.trace.pop();
+                return res;
+            }, err => {
                 const msg = `${err.message}:${this.formatTrace()} => ✘`;
                 const error = new Error(msg);
                 error.stack = error.stack.concat('\n').concat(err.stack);
+                while (this.trace.length > 0) this.trace.pop();
                 return Promise.reject(error);
             });
     }
@@ -43,7 +47,7 @@ export class LazyResource<T = {}> {
         return this.trace.reduce((prev: string, curr: string) => {
             if (curr.indexOf('follow') === 0) return `${prev} => ${curr}`;
 
-            return `${prev}\n  - ${curr}`;
+            return `${prev}\n    | ${curr}`;
         }, '');
     }
 }

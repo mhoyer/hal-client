@@ -101,7 +101,7 @@ describe('HAL Client', () => {
                 expect(fetchSpy).calledWith('http://api/');
                 expect(err.message).to.equal(
                     `Unable to find link relation 'not-existing':\n` +
-                    `  - GET http://api/ => follow 'not-existing' => ✘`
+                    `    | GET http://api/ => follow 'not-existing' => ✘`
                 );
             });
 
@@ -117,8 +117,8 @@ describe('HAL Client', () => {
 
                 expect(err.message).to.equal(
                     `Unable to find link relation 'not-existing':\n` +
-                    `  - GET http://api/ => follow 'foo'\n` +
-                    `  - GET http://api/foo => follow 'not-existing' => ✘`);
+                    `    | GET http://api/ => follow 'foo'\n` +
+                    `    | GET http://api/foo => follow 'not-existing' => ✘`);
             });
 
             it('rejects in case `fetch` failed', async () => {
@@ -131,7 +131,52 @@ describe('HAL Client', () => {
 
                 expect(err.message).to.equal(
                     `Failed to fetch:\n` +
-                    `  - GET http://api/ => ✘`);
+                    `    | GET http://api/ => ✘`);
+            });
+
+            it('resets fetch-follow trace when .run failes after first successful run', async () => {
+                const trail = HalClient.startAt('http://api/').GET();
+
+                const firstRes = await trail
+                    .follow('foo').GET()
+                    .run().catch(e => e);
+                const secondErr = await trail
+                    .follow('second-not-existing').GET()
+                    .run().catch(e => e);
+
+                expect(fetchSpy).calledThrice;
+                expect(fetchSpy.getCall(0)).calledWith('http://api/');
+                expect(fetchSpy.getCall(1)).calledWith('http://api/foo');
+                expect(fetchSpy.getCall(2)).calledWith('http://api/');
+
+                expect(firstRes).to.equal(expectedResource);
+
+                expect(secondErr.message).to.equal(
+                    `Unable to find link relation 'second-not-existing':\n` +
+                    `    | GET http://api/ => follow 'second-not-existing' => ✘`);
+            });
+
+            it('resets fetch-follow trace when .run completed two times with error', async () => {
+                const trail = HalClient.startAt('http://api/').GET();
+
+                const firstErr = await trail
+                    .follow('first-not-existing').GET()
+                    .run().catch(e => e);
+                const secondErr = await trail
+                    .follow('second-not-existing').GET()
+                    .run().catch(e => e);
+
+                expect(fetchSpy).calledTwice;
+                expect(fetchSpy.getCall(0)).calledWith('http://api/');
+                expect(fetchSpy.getCall(1)).calledWith('http://api/');
+
+                expect(firstErr.message).to.equal(
+                    `Unable to find link relation 'first-not-existing':\n` +
+                    `    | GET http://api/ => follow 'first-not-existing' => ✘`);
+
+                expect(secondErr.message).to.equal(
+                    `Unable to find link relation 'second-not-existing':\n` +
+                    `    | GET http://api/ => follow 'second-not-existing' => ✘`);
             });
 
             it('resolves even if `fetch` returns with status >= 400', async () => {
