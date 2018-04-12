@@ -10,15 +10,15 @@ describe('Lazy Resource', () => {
     const expectedResource: HalResource = {
         _links: {
             foo: [
-                { href: 'http://example.com/foo' },
-                { href: 'http://example.com/{x}', templated: true }
+                { href: 'http://api/foo' },
+                { href: 'http://api/{x}', templated: true }
             ],
-            bar: { href: 'http://example.com/bar' }
+            bar: { href: 'http://api/bar' }
         },
         _embedded: {
             emb: [{
                 _links: {
-                    parent: { href: 'http://example.com/' }
+                    parent: { href: 'http://api/' }
                 }
             }]
         }
@@ -49,8 +49,8 @@ describe('Lazy Resource', () => {
             const barRes = await sut.follow('bar').GET<any>().run();
 
             expect(fetchSpy).calledTwice;
-            expect(fetchSpy.getCall(0)).calledWith('http://example.com/foo');
-            expect(fetchSpy.getCall(1)).calledWith('http://example.com/bar');
+            expect(fetchSpy.getCall(0)).calledWith('http://api/foo');
+            expect(fetchSpy.getCall(1)).calledWith('http://api/bar');
 
             expect(fooRes).to.equal(expectedResource);
             expect(barRes).to.equal(expectedResource);
@@ -76,7 +76,7 @@ describe('Lazy Resource', () => {
 
             return result.then(res => {
                 expect(fetchSpy).calledOnce;
-                expect(fetchSpy).calledWith('http://example.com/foo');
+                expect(fetchSpy).calledWith('http://api/foo');
 
                 expect(res).to.equal(expectedResource);
             });
@@ -90,7 +90,7 @@ describe('Lazy Resource', () => {
 
             return result.then(res => {
                 expect(fetchSpy).calledOnce;
-                expect(fetchSpy).calledWith('http://example.com/12');
+                expect(fetchSpy).calledWith('http://api/12');
 
                 expect(res).to.equal(expectedResource);
             });
@@ -126,7 +126,7 @@ describe('Lazy Resource', () => {
 
             return result.then(res => {
                 expect(fetchSpy).calledOnce;
-                expect(fetchSpy).calledWith('http://example.com/foo');
+                expect(fetchSpy).calledWith('http://api/foo');
                 expect(res).to.equal(expectedResource._embedded.emb[0]);
             });
         });
@@ -137,7 +137,7 @@ describe('Lazy Resource', () => {
 
             return result.then(res => {
                 expect(fetchSpy).calledOnce;
-                expect(fetchSpy).calledWith('http://example.com/');
+                expect(fetchSpy).calledWith('http://api/');
                 expect(res).to.equal(expectedResource);
             });
         });
